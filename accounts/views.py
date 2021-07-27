@@ -1,5 +1,6 @@
 import socket
 
+import requests.utils
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
@@ -117,13 +118,25 @@ def login(request):
                             for item in cart_item:
                                 item.user = user
                                 item.save()
-
-
             except:
                 pass
+
             auth.login(request, user)
             messages.success(request, "You are now logged in.")
-            return redirect('dashboard')
+            url = request.META.get('HTTP_REFERER')  # stores the url
+            try:
+                query = requests.utils.urlparse(url).query
+                # print('query ->', query)
+                # print('------')
+                # next=/cart/checkout/
+                # here 'next' will be key and cart, checkout will be value
+                # print('params ->', params) # {'next': '/cart/checkout/'}
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect('dashboard')
         else:
             messages.error(request, "Invalid login credentials")
             return redirect('login')
