@@ -5,10 +5,47 @@ from django.shortcuts import redirect, render
 
 from carts.models import CartItem
 from .forms import OrderForm
-from .models import Order
+from .models import Order, Payment, OrderProduct
 
 
-def payments(request):
+def payments(request, orderId):
+    if orderId:
+        order = Order.objects.get(user=request.user, order_number=orderId)
+
+        # store transaction
+        # this is just dummy transaction as payment integration is different for different methods
+        payment = Payment(
+            user=request.user,
+            payment_id=orderId,
+            payment_method='Paypal',
+            amount_paid=order.order_total,
+            status='Completed'
+        )
+        payment.save()
+
+        order.payment = payment
+        order.is_ordered = True
+        order.save()
+
+        # move the cart items to Order Product table
+        cart_items = CartItem.objects.filter(user=request.user)
+
+        for item in cart_items:
+            orderproduct = OrderProduct()
+            orderproduct.order_id = order.id
+            orderproduct.payment = payment
+            orderproduct.user_id = request.user.id
+            orderproduct.product_id = item.product_id
+            orderproduct.quantity = item.quantity
+            orderproduct.product_price = item.product.price
+            orderproduct.ordered = True
+            orderproduct.save()
+        # Reduce the qty of sold products
+
+        # Clear the cart
+
+        # Send order receive email to customer
+        return redirect('store')
     return render(request, 'orders/payments.html')
 
 
@@ -58,6 +95,15 @@ def place_order(request, total=0, quantity=0):
             order_number = current_date + str(data.id)
             data.order_number = order_number
             data.save()
-            return redirect('checkout')
+
+            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+            context = {
+                'order': order,
+                'cart_items': cart_items,
+                'total': total,
+                'tax': tax,
+                'grand_total': grand_total
+            }
+            return render(request, 'orders/payments.html', context)
     else:
         return redirect('checkout')
