@@ -4,6 +4,7 @@ import datetime
 from django.shortcuts import redirect, render
 
 from carts.models import CartItem
+from store.models import Product
 from .forms import OrderForm
 from .models import Order, Payment, OrderProduct
 
@@ -47,8 +48,10 @@ def payments(request, orderId):
             orderproduct.variations.set(product_variation)
             orderproduct.save()
 
-        # Reduce the qty of sold products
-
+            # Reduce the qty of sold products
+            product = Product.objects.get(id=item.product_id)
+            product.stock -= item.quantity
+            product.save()
         # Clear the cart
 
         # Send order receive email to customer
