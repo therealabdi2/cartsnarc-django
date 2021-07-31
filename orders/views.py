@@ -1,7 +1,9 @@
 # Create your views here.
 import datetime
 
+from django.core.mail import EmailMessage
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 
 from carts.models import CartItem
 from store.models import Product
@@ -57,7 +59,15 @@ def payments(request, orderId):
         CartItem.objects.filter(user=request.user).delete()
 
         # Send order receive email to customer
+        mail_subject = 'Thank-you for your order!'
+        message = render_to_string('orders/order_received_email.html', {
+            'user': request.user,
+            'order': order,
+        })
 
+        to_email = request.user.email
+        send_email = EmailMessage(mail_subject, message, to=[to_email])
+        send_email.send()
 
         return redirect('store')
     return render(request, 'orders/payments.html')
