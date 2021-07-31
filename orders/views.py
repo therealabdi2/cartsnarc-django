@@ -4,6 +4,7 @@ import datetime
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 from carts.models import CartItem
 from store.models import Product
@@ -69,7 +70,8 @@ def payments(request, orderId):
         send_email = EmailMessage(mail_subject, message, to=[to_email])
         send_email.send()
 
-        return redirect('store')
+        return redirect(reverse('order_complete', kwargs={"orderId": orderId}))
+
     return render(request, 'orders/payments.html')
 
 
@@ -131,3 +133,37 @@ def place_order(request, total=0, quantity=0):
             return render(request, 'orders/payments.html', context)
     else:
         return redirect('checkout')
+
+
+def order_complete(request, orderId):
+    order_number = orderId
+    transId = orderId
+
+    try:
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        ordered_products = OrderProduct.objects.filter(order_id=order.id)
+
+        subtotal = 0
+        individual_total = []
+        for i in ordered_products:
+            subtotal += i.product_price * i.quantity
+            item = OrderProduct.objects.get(id=i.id)
+            total = item.quantity * item.product_price
+            individual_total.append(total)
+
+        ord_products = zip(ordered_products, individual_total)
+
+        payment = Payment.objects.get(payment_id=transId)
+
+        context = {
+            'order': order,
+            # 'ordered_products': ordered_products,
+            'transId': payment.payment_id,
+            'payment': payment,
+            'subtotal': subtotal,
+            'ord_prods': ord_products,
+        }
+        return render(request, 'orders/order_complete.html', context=context)
+
+    except (Order.DoesNotExist):
+        return redirect('home')
