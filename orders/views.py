@@ -52,9 +52,13 @@ def payments(request, orderId):
             product = Product.objects.get(id=item.product_id)
             product.stock -= item.quantity
             product.save()
+
         # Clear the cart
+        CartItem.objects.filter(user=request.user).delete()
 
         # Send order receive email to customer
+
+
         return redirect('store')
     return render(request, 'orders/payments.html')
 
