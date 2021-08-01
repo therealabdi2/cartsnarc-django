@@ -14,6 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from carts.models import Cart, CartItem
 from carts.views import _cart_id
+from orders.models import Order
 from .forms import RegistrationForm
 from .models import Account
 
@@ -170,7 +171,13 @@ def activate(request, uidb64, token):
 
 @login_required()
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+    orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
+    orders_count = orders.count()
+    context = {
+        'orders_count': orders_count,
+
+    }
+    return render(request, 'accounts/dashboard.html', context=context)
 
 
 def forgotPassword(request):
