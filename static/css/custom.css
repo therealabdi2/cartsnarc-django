@@ -1,0 +1,4 @@
+/*hide radio button*/
+.rate > input{
+    display: none;
+}
