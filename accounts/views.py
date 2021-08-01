@@ -14,7 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from carts.models import Cart, CartItem
 from carts.views import _cart_id
-from orders.models import Order
+from orders.models import Order, OrderProduct, Payment
 from .forms import RegistrationForm, UserForm, UserProfileForm
 from .models import Account, UserProfile
 
@@ -248,6 +248,7 @@ def resetPassword(request):
             return redirect('resetPassword')
     return render(request, 'accounts/resetpassword.html')
 
+
 @login_required(login_url='login')
 def my_orders(request):
     orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
@@ -307,3 +308,38 @@ def change_password(request):
             return redirect('change_password')
 
     return render(request, 'accounts/change_password.html')
+
+
+@login_required(login_url='login')
+def order_detail(request, order_id):
+    order_number = order_id
+    transId = order_id
+
+    try:
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        ordered_products = OrderProduct.objects.filter(order_id=order.id)
+
+        subtotal = 0
+        individual_total = []
+        for i in ordered_products:
+            subtotal += i.product_price * i.quantity
+            item = OrderProduct.objects.get(id=i.id)
+            total = item.quantity * item.product_price
+            individual_total.append(total)
+
+        ord_products = zip(ordered_products, individual_total)
+
+        payment = Payment.objects.get(payment_id=transId)
+
+        context = {
+            'order': order,
+            # 'ordered_products': ordered_products,
+            'transId': payment.payment_id,
+            'payment': payment,
+            'subtotal': subtotal,
+            'ord_prods': ord_products,
+        }
+        return render(request, 'accounts/order_detail.html', context=context)
+
+    except (Order.DoesNotExist):
+        return redirect('home')
