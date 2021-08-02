@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-import django_heroku
 from pathlib import Path
 
+import django_heroku
+from decouple import config
 from django.contrib.messages import constants as messages
 from dotenv import load_dotenv
-from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 django_heroku.settings(locals())
@@ -84,6 +85,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'category.context_processors.menu_links',  # the menu links will be available in all templates
                 'carts.context_processors.counter',
+                'django_heroku'
             ],
         },
     },

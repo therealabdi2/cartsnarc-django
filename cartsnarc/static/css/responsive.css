@@ -1,84 +1,90 @@
 .mobile-block {
-  display: none;
+    display: none;
 }
 
 @media (max-width: 1200px) {
-  /* tablet devices */
+    /* tablet devices */
 }
+
 @media (max-width: 992px) {
-  /* small tablet devices */
-  .slider-main .item-slide {
-    height: auto;
-  }
+    /* small tablet devices */
+    .slider-main .item-slide {
+        height: auto;
+    }
 
-  .table-shopping-cart tr td:first-child {
-    width: 250px;
-  }
-  .table-shopping-cart .itemside .info {
-    padding: 0;
-  }
-  .table-shopping-cart .itemside .aside {
-    display: none;
-  }
+    .table-shopping-cart tr td:first-child {
+        width: 250px;
+    }
+
+    .table-shopping-cart .itemside .info {
+        padding: 0;
+    }
+
+    .table-shopping-cart .itemside .aside {
+        display: none;
+    }
 }
+
 @media all and (max-width: 768px) {
-  /* mobile devices */
-  .mobile-block {
-    display: block;
-  }
+    /* mobile devices */
+    .mobile-block {
+        display: block;
+    }
 
-  .mobile-hide {
-    display: none;
-  }
+    .mobile-hide {
+        display: none;
+    }
 
-  .section-header .logo {
-    max-height: 40px;
-    width: auto;
-  }
-  .section-header .header-main .brand-wrap {
-    margin-bottom: 1rem;
-    display: inline-block;
-  }
-  .section-header .header-main .search {
-    margin-bottom: 1rem;
-  }
+    .section-header .logo {
+        max-height: 40px;
+        width: auto;
+    }
 
-  .item-feature {
-    margin-bottom: 20px;
-  }
+    .section-header .header-main .brand-wrap {
+        margin-bottom: 1rem;
+        display: inline-block;
+    }
 
-  .mobile-order-first {
-    order: -1;
-  }
+    .section-header .header-main .search {
+        margin-bottom: 1rem;
+    }
 
-  .mobile-order-1 {
-    order: 1;
-  }
+    .item-feature {
+        margin-bottom: 20px;
+    }
 
-  .mobile-order-2 {
-    order: 2;
-  }
+    .mobile-order-first {
+        order: -1;
+    }
 
-  .mobile-order-3 {
-    order: 3;
-  }
+    .mobile-order-1 {
+        order: 1;
+    }
 
-  .mobile-py {
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
+    .mobile-order-2 {
+        order: 2;
+    }
 
-  .mobile-pb {
-    padding-bottom: 20px;
-  }
+    .mobile-order-3 {
+        order: 3;
+    }
 
-  .mobile-pt {
-    padding-top: 20px;
-  }
+    .mobile-py {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
 
-  .navbar-expand .navbar-collapse {
-    flex-direction: column;
-  }
+    .mobile-pb {
+        padding-bottom: 20px;
+    }
+
+    .mobile-pt {
+        padding-top: 20px;
+    }
+
+    .navbar-expand .navbar-collapse {
+        flex-direction: column;
+    }
 }
 
 /*# sourceMappingURL=responsive.css.map */
