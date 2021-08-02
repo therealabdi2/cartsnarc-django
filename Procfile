@@ -1,1 +1,1 @@
-web:gunicorn cartsnarc.wgi
+web: gunicorn cartsnarc.wsgi
