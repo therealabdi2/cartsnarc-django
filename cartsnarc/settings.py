@@ -96,7 +96,7 @@ AUTH_USER_MODEL = 'accounts.Account'  # app.model
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if 'DATABASE_URL' in os.environ:
+if 'DATABASE_UR' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
